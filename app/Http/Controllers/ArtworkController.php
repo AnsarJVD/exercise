@@ -43,7 +43,6 @@ class ArtworkController extends Controller
         ]);
     }
 
-
     public function ex3(Request $request)
     {
         $validated = $request->validate([
@@ -114,6 +113,7 @@ class ArtworkController extends Controller
 
     public function ex5(Request $request)
     {
+        $validated = 
          $request->validate([
             'input' => 'required|array',
             'input.price' => 'required|boolean',
