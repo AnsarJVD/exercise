@@ -1,0 +1,13 @@
+  "input" => array:2 [
+    "price" => 100
+    "discounts" => array:2 [
+      0 => array:2 [
+        "type" => "sxdc"
+        "value" => 10
+      ]
+      1 => array:2 [
+        "type" => "flat"
+        "value" => 15
+      ]
+    ]
+  ]
