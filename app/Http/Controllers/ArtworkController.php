@@ -60,7 +60,7 @@ class ArtworkController extends Controller
         });
         $invalidIds = collect($invalidItems)->pluck('id');
 
-        
+
         return response()->json([
             "success" => true,
             "data"  => [
@@ -73,20 +73,20 @@ class ArtworkController extends Controller
 
     public function ex4(Request $request)
     {
-         $request->validate([
+        $request->validate([
             'input' => 'required|array',
             'input.order_qty' => 'required|boolean',
             'input.vendor' => 'required|array',
             'input.vendor.*.id' => 'required|integer',
             'input.vendor.*.stock' => 'required|integer',
         ]);
-        
+
         $vendors = $request->input('input.vendor');
         $orderQty = $request->input('input.order_qty');
 
         $remainingStock = $orderQty;
 
-       $vendors = collect($vendors)->map(function ($vendor) use (&$remainingStock) {
+        $vendors = collect($vendors)->map(function ($vendor) use (&$remainingStock) {
             if ($remainingStock <= 0) {
                 return [
                     'id' => $vendor['id'],
@@ -124,24 +124,23 @@ class ArtworkController extends Controller
 
         $input = $request['input'];
         $price = $input['price'];
-        $discounts =$input['discounts'];
+        $discounts = $input['discounts'];
         $array = [];
-        foreach($discounts as $discount ){
+        foreach ($discounts as $discount) {
             $type = $discount['type'];
-            $value= $discount['value'];  
-            if($type == 'flat'){
-                $array[] = $price-$value;
-            } 
-            else if ($type == 'percentage'){
-                $array[] = $value*$price /100;
-            }   
+            $value = $discount['value'];
+            if ($type == 'flat') {
+                $array[] = $price - $value;
+            } else if ($type == 'percentage') {
+                $array[] = $value * $price / 100;
+            }
         }
         $final_result = min($array);
         return response()->json(
             [
-                'success'=> true,
-                'data'=> ["final_result"=> $final_result],
-                'error'=> null
+                'success' => true,
+                'data' => ["final_result" => $final_result],
+                'error' => null
             ]
         );
     }
@@ -151,29 +150,30 @@ class ArtworkController extends Controller
 
         $input = $request['input'];
         $price = $input['price'];
-        $discounts =$input['discounts'];
+        $discounts = $input['discounts'];
         $array = [];
-        foreach($discounts as $discount ){
+        foreach ($discounts as $discount) {
             $type = $discount['type'];
-            $value= $discount['value'];  
-            if($type == 'flat'){
-                $array[] = $price-$value;
-            } 
-            else if ($type == 'percentage'){
-                $array[] = $value*$price /100;
-            }   
+            $value = $discount['value'];
+            if ($type == 'flat') {
+                $array[] = $price - $value;
+            } else if ($type == 'percentage') {
+                $array[] = $value * $price / 100;
+            }
         }
         $final_result = min($array);
         return response()->json(
             [
-                'success'=> true,
-                'data'=> ["final_result"=> $final_result],
-                'error'=> null
+                'success' => true,
+                'data' => ["final_result" => $final_result],
+                'error' => null
             ]
         );
     }
-        // logger("data is here " . json_encode($request->all()));       
-  
+    // logger("data is here " . json_encode($request->all()));       
+    public function ex9(Request $request) {
+        
+    }
     public function ex12(Request $request)
     {
         $request->validate([
@@ -190,7 +190,6 @@ class ArtworkController extends Controller
         $applyBundle = $input['apply_bundle'];
         $totalPrice = 0;
         $appliedbundlePrice = 0;
-
         foreach ($items as $item) {
             $itemPrice = $item['price'];
             $totalPrice += $itemPrice;
@@ -200,113 +199,54 @@ class ArtworkController extends Controller
             $appliedbundlePrice = $totalPrice - $bundlePrice;
         }
 
-        if($appliedbundlePrice >= 0){
+        if ($appliedbundlePrice >= 0) {
             return response()->json([
-                'success' => true ,
+                'success' => true,
                 'data' => ["final_price" => $bundlePrice],
                 'error' => null
             ]);
         }
         return response()->json([
-        'success' => true ,
-        'data' => ["final_price" => $totalPrice],
-        'error' => null
-        ]);
-    }
-
-    public function ex13(Request $request)
-    {
-       
-    }
-
-
-     public function ex14(Request $request)
-{
-    $request->validate([
-        'input' => 'required|array',
-        'input.nums' => 'required|array',
-        'input.nums.*' => 'required|integer',
-        'input.target' => 'required|integer',
-    ]);
-
-    $input = $request->input('input');
-    $nums = $input['nums'];
-    $target = $input['target'];
-
-    for ($i = 0; $i < count($nums); $i++) {
-        for ($j = $i + 1; $j < count($nums); $j++) {
-            if ($nums[$i] + $nums[$j] === $target) {
-                return response()->json([
-                    'success' => true,
-                    'data' => [$i, $j],
-                    'error' => null,
-                ]);
-            }
-        }
-    }
-
-    return response()->json([
-        'success' => false,
-        'data' => null,
-        'error' => 'No matching numbers found',
-    ]);
-}
-
-     public function ex15(Request $request)
-{
-    $request->validate([
-        'input' => 'required|array',
-        'input.order' => 'required|array',
-        'input.order.weight' => 'required|numeric|gt:0',
-        'input.order.country' => 'required|string',
-        'input.rules' => 'required|array',
-        'input.rules.*.id' => 'required|integer',
-        'input.rules.*.method' => 'required|string',
-        'input.rules.*.priority' => 'required|integer',
-        'input.rules.*.max_weight' => 'nullable|numeric',
-        'input.rules.*.country' => 'nullable|string',
-    ]);
-
-    $input = $request->input('input');
-    $order = $input['order'];
-    $rules = $input['rules'];
-
-    $selectedRule = null;
-
-    foreach ($rules as $rule) {
-        $isMatched = true;
-
-        if (isset($rule['max_weight']) && $order['weight'] > $rule['max_weight']) {
-            $isMatched = false;
-        }
-
-        if (isset($rule['country']) && $order['country'] !== $rule['country']) {
-            $isMatched = false;
-        }
-
-        if ($isMatched) {
-            if ($selectedRule === null || $rule['priority'] > $selectedRule['priority']) {
-                $selectedRule = $rule;
-            }
-        }
-    }
-
-    if ($selectedRule) {
-        return response()->json([
             'success' => true,
-            'data' => [
-                'method' => $selectedRule['method'],
-            ],
-            'error' => null,
+            'data' => ["final_price" => $totalPrice],
+            'error' => null
         ]);
     }
 
-    return response()->json([
-        'success' => false,
-        'data' => null,
-        'error' => 'No matching shipping rule found',
-    ]);
-}
-}    
-    
+    public function ex13(Request $request) {}
 
+
+    public function ex14(Request $request)
+    {
+        $request->validate([
+            'input' => 'required|array',
+            'input.nums' => 'required|array',
+            'input.nums.*' => 'required|integer',
+            'input.target' => 'required|integer',
+        ]);
+
+        $input = $request->input('input');
+        $nums = $input['nums'];
+        $target = $input['target'];
+
+        for ($i = 0; $i < count($nums); $i++) {
+            for ($j = $i + 1; $j < count($nums); $j++) {
+                if ($nums[$i] + $nums[$j] === $target) {
+                    return response()->json([
+                        'success' => true,
+                        'data' => [$i, $j],
+                        'error' => null,
+                    ]);
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'data' => null,
+            'error' => 'No matching numbers found',
+        ]);
+    }
+
+    public function ex15(Request $request) {}
+}

@@ -10,6 +10,7 @@ Route::post('/exercise-4-vendor-allocation', [ArtworkController::class, 'ex4']);
 Route::post('/exercise-5-discount', [ArtworkController::class, 'ex5']);
 Route::post('/exercise-6-approval-flow', [ArtworkController::class, 'ex6']);
 
+Route::post('/exercise-9−webhook', [ArtworkController::class, 'ex9']);
 Route::post('/exercise-12-bundle-pricing', [ArtworkController::class, 'ex12']);
 Route::post('/exercise-13-cart-merge', [ArtworkController::class, 'ex13']);
 Route::post('/exercise-14-upsell', [ArtworkController::class, 'ex14']);
